@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ question.text }}</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        .correct-answer { background-color: #c7ffd8; } /* Light green background */
+        .incorrect-answer { background-color: #ffd8d8; } /* Light red background */
+        .explanation { margin-top: 0.5rem; margin-bottom: 0.15rem; font-style: italic;}
+        .message {font-weight: bold; font-size: 1.5em; margin-top: 0.83em; margin-bottom: 0.83em;}
+        .not-solved {color: darkred;}
+        .solved {color: darkgreen;}
+    </style>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.7.0/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        async function submitAnswer(quizUuid, questionUuid) {
+            const checkboxes = document.querySelectorAll('input[name="answer"]:checked');
+            const answers = Array.from(checkboxes).map(checkbox => checkbox.value);
+            
+            const response = await fetch(`/quiz/${quizUuid}/${questionUuid}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ answers: answers })
+            });
+            const data = await response.json();
+            
+            // Clear previous styles & explanation text
+            document.querySelectorAll('.form-check').forEach(check => {
+                check.classList.remove('correct-answer', 'incorrect-answer');
+                const explanationParagraph = check.querySelector('.explanation');
+                if (explanationParagraph) {
+                    explanationParagraph.innerHTML = '';
+                }
+            });
+
+            const messageParagraph = document.getElementById('message');
+            if (data.message) {
+                messageParagraph.classList = 'message';
+                messageParagraph.classList.add(data.is_correct ? 'solved' : 'not-solved');
+                messageParagraph.textContent = data.message;
+            } else {
+                messageParagraph.textContent = '';
+            }
+
+            // Apply styles based on correctness and show explanations
+            document.querySelectorAll('.form-check input').forEach(input => {
+                if (data.info.hasOwnProperty(input.value)) {
+                    const parentDiv = input.parentElement;
+                    const explanationParagraph = parentDiv.querySelector('.explanation');
+                    explanationParagraph.innerHTML = data.info[input.value].info; // Set the explanation text
+                    if (answers.includes(input.value) || data.is_correct) {
+                        // If the input's value is in the selected answers, display the explanation
+                        explanationParagraph.innerHTML = data.info[input.value].info || '';
+                        // Apply the correct-answer class if the answer is correct, otherwise apply incorrect-answer
+                        parentDiv.classList.add(data.info[input.value].true_answer ? 'correct-answer' : 'incorrect-answer');
+                    }
+                }
+            });
+
+            // Handle "Next Question" and "Back to Start" buttons
+            const submitButton = document.querySelector('button[type="submit"]');
+            const nextQuestionButton = document.getElementById('next-btn');
+            const backToStartButton = document.getElementById('back-btn');
+            if (data.is_correct) {
+                submitButton.style.display = 'none'; // Hide the submit button
+                if (data.next_question_uuid) {
+                    nextQuestionButton.href = `/quiz/${quizUuid}/${data.next_question_uuid}`;
+                    nextQuestionButton.style.display = 'inline-block';
+                    backToStartButton.style.display = 'none';
+                } else {
+                    nextQuestionButton.style.display = 'none';
+                    backToStartButton.style.display = 'inline-block';
+                }
+            }
+        }
+    </script>
+</head>
+<body>
+    <div class="container mt-5">
+        <div class="card">
+            {% if question.image_path %}
+            <img src="{{ url_for('static', filename=question.image_path) }}" alt="Question Image" class="img-fluid mb-3">
+            {% endif %}
+            
+            {% if question.relative_index %}
+            <h1 class="mb-4"> <b>{{question.relative_index}}</b> {{ question.text }}</h1>
+            {% else %}
+            <h1 class="mb-4"> {{ question.text }}</h1>
+            {% endif %}
+            <div class="card-body">
+                <form onsubmit="event.preventDefault(); submitAnswer('{{ quiz_uuid }}', '{{ question_uuid }}');" class="mb-3">
+                    <div class="form-group">
+                        {% for key, answer in question.answers.items() %}
+                            <div class="form-check">
+                                <input class="form-check-input" type={{ "radio" if question.single_answer else 'checkbox' }} name="answer" id="answer_{{ key }}" value="{{ key }}">
+                                <label class="form-check-label" for="answer_{{ key }}">
+                                    {{ answer.text }}
+                                </label>
+                                <p class="explanation" id="explanation-{{ key }}"></p>
+                            </div>
+                        {% endfor %}
+                    </div>
+                    <p id="message" style="font-weight: bold; font-size: 1.5em; margin-top: 0.83em; margin-bottom: 0.83em;"></p>
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                    <a id="next-btn" class="btn btn-success mt-3" style="display:none;">Next Question</a>
+                    <a id="back-btn" class="btn btn-secondary mt-3" href="/start" style="display:none;">Back to Start</a>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

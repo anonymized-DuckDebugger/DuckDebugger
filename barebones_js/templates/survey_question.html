@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Survey Question</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .question { margin-bottom: 20px; }
+        .answers { margin-bottom: 20px; }
+    </style>
+    
+</head>
+<body>
+    <script src="https://cdn.jsdelivr.net/npm/js-cookie@3/dist/js.cookie.min.js"></script>
+    <script>
+        function generateUUID() {
+            return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+                var r = Math.random() * 16 | 0,
+                    v = c === 'x' ? r : (r & 0x3 | 0x8);
+                return v.toString(16);
+            });
+        }
+        var uuidCookie = Cookies.get("uuid");
+        if (!uuidCookie) {
+            var newUUID = generateUUID();
+            Cookies.set("uuid", newUUID, { expires: Infinity }); // Set the cookie with no expiry
+            console.log("UUID cookie set:", newUUID);
+        } else {
+            console.log("UUID cookie already exists:", uuidCookie);
+        }
+    </script>
+    <h1>Survey Question</h1>
+    <form method="POST">
+        <div class="question">
+            <h2>{{ question.get('question_text') }}</h2>
+        </div>
+
+        <div class="answers">
+            {% if question.get('b_sub_questions') %}
+                <h3>{{ question.get('question_text') }}</h3>
+                {% for sub_id, sub_q in question['sub_questions'].items() %}
+                    <div class="sub-question">
+                        <h4>{{ sub_q['question_text'] }}</h4>
+                        {% for answer_key, answer_text in sub_q['answers'].items() %}
+                            <label>
+                                {% if sub_q.get('b_multi_answer') %}
+                                    <input type="checkbox" name="{{ sub_id }}" value="{{ answer_key }}">
+                                {% else %}
+                                    <input type="radio" name="{{ sub_id }}" value="{{ answer_key }}">
+                                {% endif %}
+                                {{ answer_text }}
+                            </label><br>
+                        {% endfor %}
+                        {% if sub_q.get('b_other_answer') %}
+                            <label>
+                                {% if sub_q.get('b_multi_answer') %}
+                                    <input type="checkbox" name="{{ sub_id }}_other_toggle" value="Other">
+                                {% else %}
+                                    <input type="radio" name="{{ sub_id }}" value="other">
+                                {% endif %}
+                                Other: <input type="text" name="{{ sub_id }}_other" placeholder="Your answer">
+                            </label><br>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+            {% else %}
+                {% for answer_key, answer_text in question['answers'].items() %}
+                    <label>
+                        {% if question.get('b_multi_answer') %}
+                            <input type="checkbox" name="answer" value="{{ answer_key }}">
+                        {% else %}
+                            <input type="radio" name="answer" value="{{ answer_key }}">
+                        {% endif %}
+                        {{ answer_text }}
+                    </label><br>
+                {% endfor %}
+                {% if question.get('b_other_answer') %}
+                    <label>
+                        {% if question.get('b_multi_answer') %}
+                            <input type="checkbox" name="answer_other_toggle" value="Other">
+                        {% else %}
+                            <input type="radio" name="answer" value="other">
+                        {% endif %}
+                        Other: <input type="text" name="answer_other" placeholder="Your answer">
+                    </label><br>
+                {% endif %}
+            {% endif %}
+        </div>
+
+        <button type="submit">Next Question</button>
+    </form>
+</body>
+</html>

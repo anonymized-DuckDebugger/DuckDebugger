@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Secure Code Review</title>
+    <style>
+        .modal-overlay {
+            display: flex;
+            justify-content: center;  /* Center children horizontally */
+            align-items: center;      /* Center children vertically */
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;              /* Full viewport width */
+            height: 100%;             /* Full viewport height */
+            background-color: rgba(0, 0, 0, 0.7);
+            z-index: 999;
+        }
+        .modal-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            padding: 20px;
+            background-color: #fff;
+        }
+
+        .custom-card-col { /* tighter grid */
+            padding-left: 15px;  
+            padding-right: 15px; 
+        }
+        .custom-navbar-bg {
+            background-color: #fdb158;
+        }
+        .fade-in {
+            opacity: 1;
+            transition: opacity 0.15s ease-in;
+        }
+
+        /* CSS for fade-out effect */
+        .fade-out {
+            opacity: 0;
+            transition: opacity 0.15s ease-out;
+        }
+
+        /* Set display to none after the transition ends */
+        .fade-out.done {
+            display: none;
+        }
+    </style>
+
+    <script src="https://cdn.jsdelivr.net/npm/js-cookie@3.0.1/dist/js.cookie.min.js"></script>
+     <!-- Bootstrap CSS -->
+     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet">
+     <!-- Bootstrap JS -->
+     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js"></script>
+     <link href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" rel="stylesheet">
+     <!-- jQuery and jQuery UI -->
+     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+     <script src="https://code.jquery.com/ui/1.13.0/jquery-ui.min.js"></script>
+     <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.0/themes/base/jquery-ui.css">
+     
+</head>
+<body>
+    <!-- <div class="modal-overlay" id="modal">
+        <div class="modal-content" style="width: 40%; position: absolute;">
+            <p>Welcome! Please follow the instructions and press "Start" when ready.</p>
+            <button id="startButton">Start</button>
+        </div>
+    </div> -->
+
+    <!-- Navbar with Instructions button -->
+    <nav class="navbar navbar-expand-lg navbar-light custom-navbar-bg">
+        <div class="container-fluid">
+                <!-- mr-auto pushes left -->
+                <ul class="navbar-nav"> 
+                    <!-- <li class="nav-item" style="margin-right:5px">
+                        <button class="bnt btn-info" id="instructionsButton">
+                            <i class="fas fa-info-circle"></i> Instructions
+                        </button>
+                    </li> -->
+                    <li class="nav-item mr-3">
+                        <span class="navbar-brand" href="#">Secure Code Review</span>
+                    </li>
+                </ul>
+                <!-- ml-auto pushes this navbar-nav to the right -->
+                <ul class="navbar-nav ml-auto"> 
+                    <li class="nav-item">
+                        <div class="nav-link">
+                            <img style="max-height: 45px;" src="/static/duck.png" alt="">
+                        </div>
+                    </li>
+                </ul>
+            </div>
+    </nav>
+   
+
+    <div class="container mt-4">
+
+        <div class="text-center" id="loadingSpinner" style="display: none;">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+        </div>
+        
+        <!-- FILTERS -->
+        <!-- <div class="row mb-3">
+            <div class="col-md-4">
+                <label for="typeFilter">Filter by Type:</label>
+                <select id="typeFilter">
+                    <option value="all" selected>All</option>
+                    <option value="review">Review</option>
+                    <option value="quiz">Quiz</option>
+                </select>
+            </div>
+            <div class="col-md-4">
+                <label for="languageFilter">Filter by Language:</label>
+                <select id="languageFilter">
+                    <option value="all" selected>All</option>
+                    <option value="csharp">C#</option>
+                    <option value="python">Python</option>
+                </select>
+            </div>
+        </div> -->
+
+        <div id="exercisesContainer" class="row">
+            <!-- only render enabled challenges -->
+            {% for key, value in exercises.items() %}
+                {% if not value.get("disabled", False) %}
+                    <div class="col-sm-6 col-md-4 mb-4" data-type="review" data-language="{{ value['language'] }}">
+                        <div class="card">
+                            <h3 class="card-header">[{{utils.getExtension(value['source'])}}] {{ value["name"] }}</h3>
+                            <div class="card-body">
+                                <a href="/review/{{ key }}" class="btn btn-primary">
+                                   <i class="fas fa-arrow-right"></i> Go
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+            {% endfor %}
+
+            {% for key, value in quizzes.items() %}
+                <!-- only render enabled challenges -->
+                {% if not value.get("disabled", False) %} 
+                    <div class="col-sm-6 col-md-4 mb-4" data-type="quiz" data-language="{{ value['language'] }}">
+                        <div class="card">
+                            <h3 class="card-header">{{ value["name"] }} ({{value["total_questions"]}}Q's)</h3>
+                            <div class="card-body">
+                                <a href="/quiz/{{ key }}/{{ value['questions'][0]['id'] }}" class="btn btn-primary">
+                                   <i class="fas fa-arrow-right"></i> Go
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+            {% endfor %}
+        </div>
+        
+    </div>
+   
+   
+    <script>
+        var uuidCookie = Cookies.get("uuid");
+        
+        // If the UUID cookie does not exist, display the modal
+        if (!uuidCookie) {
+            document.getElementById('modal').style.display = 'block';var newUUID = generateUUID();
+            Cookies.set("uuid", newUUID, { expires: Infinity }); // Set the cookie with no expiry
+            console.log("UUID cookie set:", newUUID);
+        } else {
+            console.log("UUID cookie already exists:", uuidCookie);
+        }
+
+        document.getElementById('startButton').addEventListener('click', function() {
+            document.getElementById('modal').style.display = 'none';
+        });
+
+        // Show the modal when the "Instructions" button is clicked
+        document.getElementById('instructionsButton').addEventListener('click', function() {
+            document.getElementById('modal').style.display = 'block';
+        });
+        
+        document.addEventListener('DOMContentLoaded', function() {
+
+            
+            
+            const typeFilter = document.getElementById('typeFilter');
+            const languageFilter = document.getElementById('languageFilter');
+
+            const cards = document.querySelectorAll('#exercisesContainer .col-md-4');
+            cards.forEach(card => {
+                card.classList.add('fade-in');
+            });
+            function filterCards() {
+                
+                // show the spinner
+                document.getElementById('loadingSpinner').style.display = 'block';
+
+                const typeValue = typeFilter.value
+                const languageValue = languageFilter.value
+
+                
+
+                cards.forEach(card => {
+                    
+                    const typeMatch = typeValue === 'all' || card.getAttribute('data-type') === typeValue;
+                    const languageMatch = languageValue === 'all' || card.getAttribute('data-language') === languageValue;
+                    if (typeMatch && languageMatch) {
+                        if (card.classList.contains('fade-out')) {
+                                card.classList.remove('fade-out');
+                                card.style.display = 'block'; // Or 'flex' if you're using flexbox
+                            }
+                            card.classList.add('fade-in');
+                        } else {
+                            card.classList.remove('fade-in');
+                            card.classList.add('fade-out');
+                        }
+                });
+
+                // Hide the spinner
+                document.getElementById('loadingSpinner').style.display = 'none';
+            }
+
+            // Event listeners for the filters
+            typeFilter.addEventListener('change', filterCards);
+            languageFilter.addEventListener('change', filterCards);
+            
+            // Set up the transitionend event listener to hide cards after fade out
+            cards.forEach(card => {
+                card.addEventListener('transitionend', (event) => {
+                    if (event.propertyName === 'opacity' && card.classList.contains('fade-out')) {
+                        card.style.display = 'none';
+                    }
+                });
+            });
+
+        });
+    </script>
+
+</body>
+</html>

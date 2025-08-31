@@ -1,0 +1,8 @@
+{
+    "csharp": ["semgrep"],
+    "python": ["bandit", "semgrep"],
+    "go": ["semgrep", "gosec"],
+    "javascript": ["semgrep"],
+    "c": ["semgrep"],
+    "cplusplus": ["semgrep"]
+}

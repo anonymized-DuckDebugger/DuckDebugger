@@ -1,0 +1,44 @@
+5: |
+  CWE-665: Improper Initialization. Declaring the Flask app globally - Bad Initialization Order: The Flask application requires certain configurations and settings to be applied before it can function properly. These configurations are typically set through app configuration files or by invoking methods on the app object. By declaring app globally, its initialization order becomes unpredictable, making it harder to ensure that necessary configurations are set before the application starts running. @@TAGS CWE-665
+7: |
+  CWE-798: Use of Hard-coded Credentials. database file is hardcoded and specified via a relative path. Database location should be separated from code location AND no relative paths -- might overwrite different db with the same name, depending on how code is imported/ran. @@TAGS CWE-798
+9: |
+  CWE-749: Exposed Dangerous Method or Function. Use annotated functions to check for type -- \code{type(message)} can be anything, which means that the function can be potentially misused. @@TAGS CWE-749
+11: |
+  CWE-284: Improper Access Control. Disabling CORS in responses -- The Access-Control-Allow-Origin header is used in Cross-Origin Resource Sharing (CORS) to control which origins are allowed to access a resource from a different origin. By setting the header value to *, you are effectively allowing any origin to access the resource, including potentially malicious ones.Allowing all origins can lead to potential security vulnerabilities, such as cross-site scripting (XSS) attacks or leaking sensitive information. It is recommended to be more specific and only allow the necessary origins to access your resource. @@TAGS CWE-284
+12: |
+  TODO/FIXME/etc. comments should never reach public code
+13: |
+  CWE-499: Serializable Class Containing Sensitive Data. all return values) – use jsonify and make_response, as it serializes the data you pass it to JSON and builds a IETF-compliant response, that includes status and enforces mimetype='application/json'. @@TAGS CWE-499  @@NUMS 38
+15: |
+  CWE-561: Dead code. @@TAGS CWE-561 @@ NUMS +1 23
+17: |
+  CWE-544: Missing Standardized Error Handling Mechanism. Lack of exception handling for DB operations. @@TAGS CWE-544
+18: |
+  CWE-798: Hardcoded Credentials @@TAGS CWE-798
+19: |
+  CWE-563: Assignment to Variable without Use. Unused and hardcoded variable - dead code is considered a vulnerability in software @@TAGS CWE-563
+20: |
+  CWE-200: Exposure of Sensitive Information to an Unauthorized Actor. Secret exfiltration – passwords/etc should not be printed to stdout @@TAGS CWE-200
+21: |
+  CWE-122: Heap-based Buffer Overflow. TEXT NOT NULL - no limit for fields can result in DOS @@TAGS CWE-122
+22: |
+  CWE-798: Hardcoded credentials @@TAGS CWE-798
+28: |
+  CWE-256: Plaintext Storage of a Password. Unprotected secrets in transit - Password is transmitted in plaintext. @@TAGS CWE-256
+29: |
+  CWE-544: Missing Standardized Error Handling Mechanism. Lack of exception handling for DB operations. @@TAGS CWE-544
+31: |
+  CWE-89: Possible SQL injection vector through string-based query construction. CWE-256: Passwords are stored in plaintext. @@TAGS CWE-89, CWE-256
+35: |
+  CWE-338: Use of Cryptographically Weak Pseudo-Random Number Generator. Standard pseudo-random generators are not suitable for security/cryptographic purposes. Also: no initialisation seed. Best practice: use a signed JWT instead. CWE-614, CWE-1004: Improper cookie security. httponly: When httponly is set to True, it prevents client-side JavaScript code from accessing the cookie. This adds an extra layer of security because it helps mitigate certain types of attacks, such as cross-site scripting (XSS) attacks. By setting httponly to False, you allow JavaScript code to access the cookie, which can potentially expose sensitive information to malicious scripts if there are any security vulnerabilities in your application. • security: When secure is set to True, the cookie will only be sent over HTTPS connections. This ensures that the cookie is transmitted securely and helps protect it from being intercepted by attackers. By setting secure to False, the cookie can be sent over both HTTP and HTTPS connections, which can expose the cookie to interception and potential attacks if the connection is not secure. @@TAGS CWE-338, CWE-614, CWE-1004
+37: |
+  CWE-614, CWE-1004: Insecure defaults. Secure and httponly must be explicitly set. @@TAGS CWE-614, CWE-1004
+38: |
+  CWE-499: Serializable Class Containing Sensitive Data. use flask jsonify @@TAGS CWE-499 @@NUMS 13
+41: |
+  CWE-565: Reliance on Cookies without Validation and Integrity Checking. where did this 'username' cookie come from? @@TAGS CWE-565
+42: |
+  
+45: |
+  CWE-489: Active Debug Code. debug mode in production. listening on all interfaces. @@TAGS CWE-489

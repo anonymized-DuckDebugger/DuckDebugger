@@ -1,0 +1,323 @@
+/* Import the Nunito font */
+@import url("https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap");
+
+/* Define CSS variables */
+:root {
+  --header-height: 3rem;
+  --nav-width: 68px;
+  --first-color-light: #AFA5D9;
+  --white-color: #F7F6FB;
+  --body-font: 'Nunito', sans-serif;
+  --normal-font-size: 1rem;
+  --z-fixed: 100;
+}
+
+/* Apply box-sizing to all elements */
+*, ::before, ::after {
+  box-sizing: border-box;
+}
+
+/* Base styles for the body */
+body {
+  position: relative;
+  margin: var(--header-height) 0 0 0;
+  padding: 0 1rem;
+  font-family: var(--body-font);
+  font-size: var(--normal-font-size);
+  transition: .5s;
+}
+
+/* Remove text decoration from links */
+a {
+  text-decoration: none;
+}
+
+/* Header styles */
+.header {
+  width: 100%;
+  height: var(--header-height);
+  position: fixed;
+  top: 0;
+  left: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 1rem;
+  background-color: #fdb158; /* Change to your desired color */
+  z-index: var(--z-fixed);
+  transition: .5s;
+}
+
+/* Header toggle button styles */
+.header_toggle {
+  color: #000000;
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+
+/* Header image styles */
+.header_img {
+  width: 35px;
+  height: 35px;
+  display: flex;
+  justify-content: center;
+  border-radius: 50%;
+  overflow: hidden;
+}
+
+.header_img img {
+  width: 40px;
+}
+
+/* Left sidebar styles */
+.l-navbar {
+  position: fixed;
+  left: -30%;
+  width: var(--nav-width);
+  height: 100vh;
+  background-color: #fdb158; /* Change to your desired color */
+  padding: .5rem 1rem 0 0;
+  transition: .5s;
+  z-index: var(--z-fixed);
+}
+
+/* Navigation styles */
+.nav {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  overflow: hidden;
+}
+
+/* Navigation logo and link styles */
+.nav_logo, .nav_link {
+  display: grid;
+  grid-template-columns: max-content max-content;
+  align-items: center;
+  column-gap: 1rem;
+  padding: .5rem 0 .5rem 1.5rem;
+}
+
+.nav_logo {
+  margin-bottom: 2rem;
+}
+
+.nav_logo-icon {
+  font-size: 1.25rem;
+  color: navy;
+}
+
+.nav_logo-name {
+  color: navy;
+  font-weight: 700;
+}
+
+.nav_link {
+  position: relative;
+  color: navy;
+  margin-bottom: 1.5rem;
+  transition: .3s;
+}
+
+.nav_link:hover {
+  color: maroon;
+}
+
+/* Navigation icon styles */
+.nav_icon {
+  font-size: 1.25rem;
+}
+
+/* Show left sidebar */
+.show {
+  left: 0;
+  width: var(--nav-width);
+}
+
+/* Add padding to the body */
+.body-pd {
+ 
+  padding-left: calc(var(--nav-width) + 1rem);
+}
+
+#main-content {
+  margin-top: calc(var(--header-height) + 1rem); /* Adjust this to push the main content down */
+  margin-left: calc(var(--nav-width) + 1rem); /* Adjust this to push the main content to the right */
+}
+
+.table-container {
+  display: grid;
+  place-items: top;     /* Centers both horizontally and vertically */
+}
+
+#snippetTable {
+  margin: 0;               /* Removes any default margin */
+  table-layout: fixed;
+}
+
+#snippetTable, #snippetTable td, #snippetTable button {
+  width: 100%; 
+  vertical-align: middle;
+}
+
+/* make row number thinner */
+#snippetTable td:nth-child(2) {
+  width: 3ch;
+  padding-right: 1ch;
+}
+
+/* Active link styles */
+.active {
+  color: cornflowerblue;
+}
+
+/* Active link indicator styles */
+.active::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  width: 2px;
+  height: 32px;
+  background-color: cornflowerblue;
+}
+
+/* Set height to 100vh */
+.height-100 {
+  height: 100vh;
+}
+
+/* Media query for screens with a minimum width of 768px */
+@media screen and (min-width: 768px) {
+  body {
+    margin: calc(var(--header-height) + 1rem) 0 0 0;
+    padding-left: calc(var(--nav-width) + 2rem);
+  }
+
+  .header {
+    height: calc(var(--header-height) + 1rem);
+  }
+
+  .header_img {
+    width: 40px;
+    height: 40px;
+  }
+
+  .header_img img {
+    width: 45px;
+  }
+
+  .l-navbar {
+    left: 0;
+    padding: 1rem 1rem 0 0;
+  }
+
+  .show-leftnav {
+    width: calc(var(--nav-width) + 156px);
+  }
+
+  .show {
+    width: 100%;
+  }
+
+  .body-pd {
+    padding-left: calc(var(--nav-width) + 188px);
+  }
+}
+
+/* Dropdown toggle styles */
+.dropdown-toggle::after {
+  margin-left: 0;
+}
+
+
+.cards-container {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  margin-top: 20px; /* Add some spacing between the table and the cards */
+}
+
+.card {
+  width: 45%;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Optional: Add a shadow for better visual separation */
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+#loadingOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5); /* semi-transparent black */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000; /* ensure it's on top */
+}
+
+.loader {
+  border: 16px solid #f3f3f3;
+  border-top: 16px solid #3498db;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+
+/* POP-UP */
+.modal-custom {
+  display: none;
+  position: fixed;
+  width: 80%;
+  height: 80%;
+  top: 50%;
+  left: 50%;
+  background-color: #ffffff;
+  border: 1px solid #ccc;
+  padding: 20px;
+  box-shadow: 0px 0px 15px rgba(0,0,0,0.2);
+  z-index: 1000;
+  overflow: auto;
+}
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #ccc;
+}
+
+.close-btn {
+  cursor: pointer;
+  font-size: 24px; 
+}
+
+.modal-content {
+  max-height: calc(100% - 40px); /* Adjust as per your needs */
+  overflow: auto;
+}
+
+.ui-resizable-se {
+  width: 20px;
+  height: 20px;
+  /* right: 18px;  /* Now placed outside of the content area */
+  /* bottom: -6px; /* Now placed outside of the content area */
+  /* Rescale icon */
+  -ms-transform: scale(2); /* IE 9 */
+  -webkit-transform: scale(2); /* Chrome, Safari, Opera */
+  transform: scale(2);
+}
+
+.tab-content {
+  max-height: 450px;
+  overflow-y: auto;
+}

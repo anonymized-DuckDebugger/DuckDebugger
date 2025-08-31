@@ -1,0 +1,45 @@
+<span></span><span class="kn">import</span> <span class="nn">sqlite3</span><span class="o">,</span> <span class="nn">random</span>
+<span class="kn">from</span> <span class="nn">flask</span> <span class="kn">import</span> <span class="n">Flask</span><span class="p">,</span> <span class="n">abort</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">jsonify</span>
+<span class="kn">from</span> <span class="nn">flask_cors</span> <span class="kn">import</span> <span class="n">CORS</span>
+
+<span class="n">app</span> <span class="o">=</span> <span class="n">Flask</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+<span class="n">CORS</span><span class="p">(</span><span class="n">app</span><span class="p">)</span>
+<span class="n">database</span> <span class="o">=</span> <span class="s1">&#39;./login.db&#39;</span>
+
+<span class="k">def</span> <span class="nf">create_response</span><span class="p">(</span><span class="n">message</span><span class="p">):</span>
+    <span class="n">response</span> <span class="o">=</span> <span class="n">jsonify</span><span class="p">({</span><span class="s1">&#39;message&#39;</span><span class="p">:</span> <span class="n">message</span><span class="p">})</span>
+    <span class="n">response</span><span class="o">.</span><span class="n">headers</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s1">&#39;Access-Control-Allow-Origin&#39;</span><span class="p">,</span> <span class="s1">&#39;*&#39;</span><span class="p">)</span>
+    <span class="c1"># TODO Ticket: id91263</span>
+    <span class="k">return</span> <span class="n">response</span>
+
+<span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/setup&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;POST&#39;</span><span class="p">])</span>
+<span class="k">def</span> <span class="nf">setup</span><span class="p">():</span>
+    <span class="n">connection</span> <span class="o">=</span> <span class="n">sqlite3</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">database</span><span class="p">)</span>
+    <span class="n">SECRET_PASSWORD</span> <span class="o">=</span> <span class="s2">&quot;letMeIn!&quot;</span><span class="p">;</span>
+    <span class="n">THIS_IS_A_VARIABLE</span> <span class="o">=</span> <span class="s2">&quot;WBneKJw1fHch8Qd3XFUS&quot;</span><span class="p">;</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Super Secret Password SSH Server Password to 10.10.10.1:22: &quot;</span> <span class="o">+</span> <span class="n">SECRET_PASSWORD</span><span class="p">)</span>
+    <span class="n">connection</span><span class="o">.</span><span class="n">executescript</span><span class="p">(</span><span class="s1">&#39;CREATE TABLE IF NOT EXISTS login(username TEXT NOT NULL UNIQUE, password TEXT NOT NULL);&#39;</span><span class="p">)</span>
+    <span class="n">connection</span><span class="o">.</span><span class="n">executescript</span><span class="p">(</span><span class="s1">&#39;INSERT OR IGNORE INTO login VALUES(&quot;user_1&quot;,&quot;123456&quot;);&#39;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">create_response</span><span class="p">(</span><span class="s1">&#39;Setup done!&#39;</span><span class="p">)</span> 
+
+<span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/login&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;POST&#39;</span><span class="p">])</span>
+<span class="k">def</span> <span class="nf">login</span><span class="p">():</span>
+    <span class="n">username</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">json</span><span class="p">[</span><span class="s1">&#39;username&#39;</span><span class="p">]</span> 
+    <span class="n">password</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">json</span><span class="p">[</span><span class="s1">&#39;password&#39;</span><span class="p">]</span>
+    <span class="n">connection</span> <span class="o">=</span> <span class="n">sqlite3</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">database</span><span class="p">)</span>
+    <span class="n">cursor</span> <span class="o">=</span> <span class="n">connection</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
+    <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s1">&#39;SELECT * FROM login WHERE username = &quot;</span><span class="si">%s</span><span class="s1">&quot; AND password = &quot;</span><span class="si">%s</span><span class="s1">&quot;&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">username</span><span class="p">,</span> <span class="n">password</span><span class="p">))</span>
+    <span class="n">user</span> <span class="o">=</span> <span class="n">cursor</span><span class="o">.</span><span class="n">fetchone</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">user</span><span class="p">:</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="n">create_response</span><span class="p">(</span><span class="s1">&#39;Login successful!&#39;</span><span class="p">)</span>
+        <span class="n">response</span><span class="o">.</span><span class="n">set_cookie</span><span class="p">(</span><span class="s1">&#39;SESSIONID&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">99999999999999999999999</span><span class="p">)),</span><span class="n">httponly</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">secure</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">response</span><span class="o">.</span><span class="n">set_cookie</span><span class="p">(</span><span class="s1">&#39;TESTID1&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="s2">&quot;TESTSTRING1&quot;</span><span class="p">),</span> <span class="n">httponly</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">secure</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">response</span><span class="o">.</span><span class="n">set_cookie</span><span class="p">(</span><span class="s1">&#39;TESTID2&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="s2">&quot;TESTSTRING2&quot;</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">response</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="n">create_response</span><span class="p">(</span><span class="s1">&#39;Login failed!&#39;</span><span class="p">)</span>
+        <span class="n">response</span><span class="o">.</span><span class="n">delete_cookie</span><span class="p">(</span><span class="s1">&#39;username&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">response</span><span class="p">,</span> <span class="mi">401</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">app</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">host</span><span class="o">=</span><span class="s1">&#39;0.0.0.0&#39;</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="mi">8080</span><span class="p">,</span> <span class="n">debug</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>

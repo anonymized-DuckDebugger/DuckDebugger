@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Review: {{ displayName }}</title>
+    <script src="https://cdn.jsdelivr.net/npm/js-cookie@3.0.1/dist/js.cookie.min.js"></script>
+     <!-- Bootstrap CSS -->
+     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet">
+     <!-- Bootstrap JS -->
+     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js"></script>
+     <link href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" rel="stylesheet">
+     <!-- jQuery and jQuery UI -->
+     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+     <script src="https://code.jquery.com/ui/1.13.0/jquery-ui.min.js"></script>
+     <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.0/themes/base/jquery-ui.css">
+     <!-- Custom Extra Style -->
+     <link rel="stylesheet" type="text/css" href="/static/styles.css">
+    <link rel="stylesheet" type="text/css" href="/{{ cssFile }}"> 
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        .modal-overlay {
+            display: flex;
+            justify-content: center;  /* Center children horizontally */
+            align-items: center;      /* Center children vertically */
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;              /* Full viewport width */
+            height: 100%;             /* Full viewport height */
+            background-color: rgba(0, 0, 0, 0.7);
+            z-index: 999;
+        }
+        
+        .checked { color: grey; text-decoration: line-through; }
+        #checklist { list-style-type: none; padding: 0; }
+
+        .modal-content {
+            width: 40%;               /* Set the width to 40% of the viewport */
+            background-color: white;
+            padding: 20px;
+            border-radius: 5px;
+            text-align: center;
+            overflow-y: auto;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            table-layout: auto;
+        }
+        th, td {
+            border: 0.5px solid #f0f0f0;
+            padding: 0px;
+            margin: 0em;
+            text-align: left;
+        }
+        /* COL1: AddComment buttons & user-input textareas*/
+        table tr td:first-child {
+            text-align: right;
+            width: 15%;
+        }
+        /* COL2: Line numbers */
+        table tr td:nth-child(2) {
+            text-align: right;
+            font-weight: bold;
+            margin-right: 2em;
+        }
+
+        /* Set textarea properties */
+        textarea {
+            width: 80ch;         /* ch unit represents the width of the "0" (zero) character, ensuring that 80 characters fit */
+            white-space: pre-wrap;  /* This makes sure lines break and wrap onto the next line */
+            overflow-wrap: break-word;  /* Breaks the line at the next available space after reaching the max-width */
+            word-break: break-all; /* Fallback for browsers that don't support overflow-wrap */
+        }
+
+        /* COL3: code snippets - wrap after 100 characters */
+        table tr td:nth-child(3) {
+            font-family: monospace;
+            max-width: 100ch; /* This sets the maximum width equivalent to 100 characters */
+            white-space: pre-wrap; /* This will respect whitespace but wrap the text */
+            word-break: break-word;
+            overflow: hidden;
+        }
+        /* COL4: Solution*/
+        td:nth-child(4) {
+            max-width: 20%;
+            word-wrap: break-word; /* To ensure content wraps inside the cell */
+            font-family: monospace;
+        }
+        
+        
+        .nopad {
+            padding: 0em;
+            margin: 0em;
+	    }
+        pre.nopad {
+            padding: 0em;
+            margin: 0em;
+	    }
+        th {
+            background-color: #f2f2f2;
+        }
+        .comment-input {
+            width: 100%;
+        }
+        #submitButton {
+            display: block;
+            margin: 20px auto;
+        }
+
+pre { line-height: 125%; margin-top: 0; margin-bottom: 0;}
+td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+    </style>
+</head>
+<body id="body-pd">
+    
+
+    <!-- Header+Sidebar thing -->
+    <header class="header" id="header">
+        <div class="header_toggle"><i id="header-toggle" class="fas fa-bars text-white"></i> </div>
+        <div class="header_text" id="feedback-message"> Click the duck to submit your answer. </div>
+        
+        <div class="header_img" style="cursor: pointer;">
+            <img id="submitDuck" src="/static/duck.png" alt="" onmousedown="invertImage();" onmouseup="revertImage();" onmouseleave="revertImage();">
+        </div>
+        <!-- <button id="submitButton" class="hidden">Submit</button> -->
+    </header>
+    <div class="l-navbar" id="nav-bar">
+        <nav class="nav">
+            <div> <!-- <a href="#" class="nav_logo"><i class="fas fa-angry"></i> <span class="nav_logo-name">Example</span> </a>-->
+                <div class="nav_list">
+                    <a href="/start" class="nav_link"> <i class="fas fa-backward"></i> <span class="nav_name">Back</span> </a>
+                    <a href="#" id="sastButton" class="nav_link"> <i class="fas fa-wrench"></i> <span class="nav_name">SAST Results</span> </a>
+                    <a href="#" id="checklistButton" class="nav_link"> <i class="fas fa-tasks"></i> <span class="checklist">Checklist</span> </a>
+                    
+                    <a class="nav_link nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="fas fa-lightbulb"></i> <span class="nav_name">Need help?</span> </a>
+                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <li><a class="dropdown-item" href="#" id="instructionsButton">Show Instructions</a></li>
+                        <li><a class="dropdown-item" href="/report/{{ exerciseUUID }}" target="_blank" id="reportButton">Report a problem</a></li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </div>
+<!--Container Main start-->
+<div class="bg-light" id="main-content">
+
+    <div id="loadingOverlay" style="display: none;">
+        <div class="loader"></div>
+    </div>
+        <!-- CONTENT GOES HERE -->
+
+
+        <!-- THE START THING -->
+    <div class="modal-overlay" id="modal">
+        <div class="modal-content" id="modal-content" style="text-align: left;">
+            <p><b>Task:</b> Perform a security-centric code review.</p>
+            <p><b>Focus</b> on finding the Line(s) of Code which contain security vulnerabilities / malpractices and antipatterns.
+                <br/>Your comment should <u>only</u> <u>briefly</u> describe the problem.
+                <br/><i>Use keywords e.g. "injection" "authentication" etc. If you use acronyms, make sure they're well known e.g XSS, SQLi, etc.</i></p>
+            <p><b>What is <u>out of scope</u>:</b> Don't make remarks on coding style, variable names etc. Rule of thumb is: if a linter can pick it up, it's out of scope.</p>
+            <br/>
+            <p style="font-size: small; font-style: italic;">Note: We collect fully anonymised analytics to continously improve our platform. Participation implies consent.</p><br/>
+            <p style="text-align: center" id="startButton-text">Press <b>Start</b> whenever you're ready.</p>
+            <button id="startButton" style="margin-bottom:10px;">Start</button>
+            <button id="instructionsOkButton" style="display: none; margin-bottom:10px;">Ok.</button>
+            <button id="backButton" onclick="window.location.href='/start';">Back to list of exercises</button>
+        </div>
+    </div>
+
+    <div class="center-container col-md-12 col-sm-12" style="text-align: center;">
+        <label for="snippetWidth">Adjust Snippet Column Width:</label>
+        <input type="range" id="snippetWidth" min="5" max="80" value="35" style="width:70%;">
+    </div>
+
+    <div class="table-container" id="table-container">
+        <table id="snippetTable">
+            <thead>
+                <tr><td style="text-align: center; width:25%;"><b>Comment</b></td>
+                    <td style="text-align: center;"><b>#</b></td>
+                    <td style="text-align: center;"><b>Code</b></td>
+                    <td style="text-align: center;"><b>Solution</b></td></tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- <button id="submitButton" class="hidden">Submit</button> -->
+
+    <!-- POP-UP for the SAST STUFF-->
+    <div class="modal-custom" id="sastModal">
+        <div class="modal-header">
+            <h3>
+                <a href="#" style="text-decoration: none; color: inherit; background-color: transparent; cursor: pointer; outline: none; border: none; padding: 0; margin: 0;">
+                    <span>[<i class="fas fa-arrows-alt"></i>]</span>
+                </a>
+                <i class="fas fa-wrench"></i>
+                <b>SAST Tools Output</b>
+            </h3>
+            <span class="close-btn" id="closeModal" style="cursor:pointer;">&times;</span>
+        </div>
+        <div class="modal-content" style="width:100%;">
+            <ul class="nav nav-tabs" id="myTabs" role="tablist">
+                {% for item in toolFindings %}
+                <li class="nav-item" role="presentation">
+                    <a class="nav-link {{ 'active' if loop.first else '' }}" id="tab{{ loop.index }}-tab" data-toggle="tab" href="#tab{{ loop.index }}" role="tab" aria-controls="tab{{ loop.index }}" aria-selected="{{ 'true' if loop.first else 'false' }}">{{ item.tool }}</a>
+                </li>
+                {% endfor %}
+            </ul>
+            <div class="tab-content" id="myTabContent">
+                {% for item in toolFindings %}
+                <div class="tab-pane fade {{ 'show active' if loop.first else '' }}" id="tab{{ loop.index }}" role="tabpanel" aria-labelledby="tab{{ loop.index }}-tab">
+                    {{ item.content|safe }}
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-custom" id="checklistModal">
+        <div class="modal-header">
+            <h3>
+                <a href="#" style="text-decoration: none; color: inherit; background-color: transparent; cursor: pointer; outline: none; border: none; padding: 0; margin: 0;">
+                    <span>[<i class="fas fa-arrows-alt"></i>]</span>
+                </a>
+                <i class="fas fa-tasks"></i>
+                <b>Simple Security Checklist</b>
+            </h3>
+            <span class="close-btn" id="closeChecklist" style="cursor:pointer;">&times;</span>
+        </div>
+        <ul id="checklist">
+            <li><input type="checkbox" id="q1"> Can you think of any use case in which the code does not behave as intended?</li>
+            <li><input type="checkbox" id="q2"> Can you think of any inputs or external events that could break the code?</li>
+            <li><input type="checkbox" id="q3"> Is error handling done the correct way?</li>
+            <li><input type="checkbox" id="q4"> Should any logging or debugging information be added or removed?</li>
+            <li><input type="checkbox" id="q5"> Are authorization and authentication handled correctly?</li>
+            <li><input type="checkbox" id="q6"> Are there insecure defaults in the code?</li>
+            <li><input type="checkbox" id="q7"> Are there security options turned off without explanation?</li>
+            <li><input type="checkbox" id="q8"> Is (user) input validated, sanitized, and escaped to prevent security attacks such as cross-site scripting or SQL injection?</li>
+            <li><input type="checkbox" id="q9"> Hardcoded secrets? i.e. keys, passwords, or usernames?</li>
+            <li><input type="checkbox" id="q10"> Is sensitive data protected accordingly in transit and/or at rest?</li>
+            <li><input type="checkbox" id="q11"> Could bad commands end up being executed on the system?</li>
+            <li><input type="checkbox" id="q12"> Dead code?</li>
+        </ul>
+    </div>
+    
+        
+
+        
+</div>
+<!--Container Main end-->
+
+<!----------------------------------------------------------------------------->
+<!-- JS BONANZA STARTS HERE -->
+    <script>
+    
+    $(document).ready(function() {
+        var exerciseUUID = "{{ exerciseUUID }}";
+    // Cookie logic
+    function generateUUID() {
+        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+            var r = Math.random() * 16 | 0,
+                v = c === 'x' ? r : (r & 0x3 | 0x8);
+            return v.toString(16);
+        });
+    }
+    // Check if the UUID cookie exists
+    var uuidCookie = Cookies.get("uuid");
+    if (!uuidCookie) {
+        var newUUID = generateUUID();
+        Cookies.set("uuid", newUUID, { expires: Infinity }); // Set the cookie with no expiry
+        console.log("UUID cookie set:", newUUID);
+        uuidCookie = Cookies.get("uuid");
+    } else {
+        console.log("UUID cookie already exists:", uuidCookie);
+    }
+//TABLE GENERATION
+        const table = document.getElementById('snippetTable');
+        const startButton = document.getElementById('startButton');
+        const startButtonText = document.getElementById('startButton-text')
+        const backButton = document.getElementById('backButton');
+        const instructionsButton = document.getElementById('instructionsButton');
+        const instructionsOkButton = document.getElementById('instructionsOkButton'); //same as start but does not log an interaction.
+        const modal = document.getElementById('modal');
+        const modalContent = document.getElementById('modal-content');
+        const submitButton = document.getElementById('submitDuck');
+        const sastButton = document.getElementById('sastButton');
+        const checklistButton = document.getElementById('checklistButton');
+
+        // Submit button needs to be moved by force.
+        const tableContainer = document.getElementById('table-container');
+        
+        const comments = {};
+        let startTime;
+        let interactions = [];
+        let user_solution = {};
+
+        startButton.addEventListener('click', () => {
+            modal.style.display = 'none';
+            startTime = new Date().getTime();
+            interactions.push({
+                type: 'startButtonClicked',
+                timestamp: startTime
+            });
+            startButtonText.style.display = 'none';
+        });
+        
+        instructionsButton.addEventListener('click', () => {
+            startButton.style.display = 'none';
+            backButton.style.display = 'none';
+            instructionsOkButton.style.display = 'block';
+            modal.style.display = 'block';
+            modalContent.style.position= 'fixed';
+            modalContent.style.left    = '30%';
+            modalContent.style.top     = '25%';
+            interactions.push({
+                type: 'instructionsClicked',
+                timestamp: new Date().getTime()
+            });
+        });
+
+        instructionsOkButton.addEventListener('click', () => {
+            modal.style.display = 'none';
+            interactions.push({
+                type: 'instructionsDone',
+                timestamp: new Date().getTime()
+            });
+        });
+
+        sastButton.addEventListener('click', () => {
+            interactions.push({
+                type: 'sast',
+                timestamp: new Date().getTime()
+            });
+        });
+
+        checklistButton.addEventListener('click', () => {
+            interactions.push({
+                type: 'checklist',
+                timestamp: new Date().getTime()
+            });
+        });
+
+        const codeSnippet = {{rendered_code|safe}};
+
+        for (let i = 0; i < codeSnippet.length; i++) {
+            
+            const row = table.insertRow();
+            
+            const firstColumnCell = row.insertCell(0);
+            const lineNumberCell = row.insertCell(1);
+            const codeCell = row.insertCell(2);        
+            const solutionCell = row.insertCell(3); 
+                       
+            solutionCell.className = `solution-cell-${i}`;
+            solutionCell.style.width='20%'
+            // TODO LINEBREAK STYLE
+
+            lineNumberCell.textContent = i + 1;
+            if (i%2 == 0){
+                lineNumberCell.style.backgroundColor="#eeeeee";
+                codeCell.style.backgroundColor="#eeeeee";
+                solutionCell.style.backgroundColor="#ecf5ff";
+                firstColumnCell.style.backgroundColor="#ecf5ff";
+            }
+            
+            const div_code = document.createElement('div');
+            div_code.className  = 'highlight';
+            const pre = document.createElement('pre');
+            pre.innerHTML = codeSnippet[i];
+            div_code.appendChild(pre);
+            codeCell.appendChild(div_code);
+
+// -- start of comment logic
+
+            const commentInput = document.createElement('input');
+            commentInput.className = 'comment-input';
+            firstColumnCell.style.width="25%"
+            firstColumnCell.appendChild(commentInput);
+            commentInput.style.border = '0px';
+            commentInput.style.padding = '0px';
+            if (i%2==0){
+                commentInput.style.backgroundColor = '#ecf5ff'
+            }
+            
+
+            commentInput.addEventListener('focus', () => {
+                interactions.push({
+                    type: 'commentInputFocusIn',
+                    lineNumber: i + 1,
+                    timestamp: new Date().getTime(),
+                });
+            });
+
+            commentInput.addEventListener('blur', () => {
+                const updatedCommentText = commentInput.value.trim(); // Get updated text
+                comments[i + 1] = {
+                    updated: updatedCommentText,
+                };
+                interactions.push({
+                    type: 'commentInputFocusOut',
+                    lineNumber: i + 1,
+                    timestamp: new Date().getTime(),
+                    updatedCommentText,
+                });
+                user_solution[i+1]=updatedCommentText;
+            });
+        }
+        
+        $('#myTabs a').click(function (e) {
+                e.preventDefault()
+                $(this).tab('show')
+        });
+
+        document.getElementById('snippetWidth').addEventListener('input', function() {
+                let selectedWidth = this.value;
+                adjustSnippetColumnWidth(selectedWidth);
+        });
+
+        function adjustSnippetColumnWidth(width) {
+            for (let i = 0; i < table.rows.length; i++) {
+                const snippetCell = table.rows[i].cells[2];
+                snippetCell.style.width = `${100-width}%`;
+            }
+        }
+
+        submitButton.addEventListener('click', () => {
+            interactions.push({
+                type: 'submitButtonClicked',
+                timestamp: new Date().getTime()
+            });
+            
+            console.log(comments);
+
+            console.log(JSON.stringify(interactions, null, 2));
+            console.log(JSON.stringify(user_solution, null, 2));
+            
+            fetch('/review_api', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    uuidCookie,
+                    exerciseUUID,
+                    interactions,
+                    user_solution,
+                }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                interactions = []; // Clear interaction log between submissions.
+                console.log('Server response:', data);
+
+                // Append the solution comments to the table
+                // const solutionStatus   = data.solution_status; // solved/not solved
+                const feedbackMessage  = data.message;         // text message.
+                const solutionComments = data.solution;        // Solution in YAML format converted to JSON object
+                const solvedBool       = data.solved;
+                
+                const commentInputs = document.querySelectorAll('.comment-input');                  
+
+                const feedbackMsg     = document.getElementById("feedback-message");
+                feedbackMsg.innerHTML = feedbackMessage;
+               
+                for (let [line, comment] of Object.entries(solutionComments)) {
+                    const lineIndex = line - 1; // Convert to zero-based index
+                    const solutionCell = document.querySelector(`.solution-cell-${line-1}`);
+                    if (lineIndex >= 0 && lineIndex < commentInputs.length) {
+                        const commentInputValue = commentInputs[lineIndex].value.trim();
+                        $(`.solution-cell-${line-1}`).html(comment);
+
+                        // Check if the corresponding comment input contains non-whitespace text
+                        if (commentInputValue) {
+                            // If comment input is not empty, set text color to green
+                            solutionCell.style.color = 'green';
+                        } else {
+                            // If comment input is empty, set text color to red
+                            if (! solvedBool) {
+                                solutionCell.style.color = 'green';
+                            } else {
+                                solutionCell.style.color = 'red';
+                            }
+                        }
+                    } else {
+                        console.error('Line number out of range');
+                    }
+                   
+                }
+
+
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+
+            
+        });
+
+// -- end of comment logic
+
+    // Navbar
+    const showNavbar = (toggleId, navId, bodyId, headerId) => {
+        const toggle = document.getElementById(toggleId),
+              nav = document.getElementById(navId),
+              bodypd = document.getElementById(bodyId),
+              headerpd = document.getElementById(headerId);
+
+        if(toggle && nav && bodypd && headerpd) {
+            toggle.addEventListener('click', () => {
+                nav.classList.toggle('show-leftnav');
+                toggle.classList.toggle('bx-x');
+                bodypd.classList.toggle('body-pd');
+                headerpd.classList.toggle('body-pd');
+            });
+        }
+    }
+    showNavbar('header-toggle','nav-bar','body-pd','header');
+
+    // Link Color
+    const linkColor = document.querySelectorAll('.nav_link');
+    
+    function colorLink() {
+        if(linkColor) {
+            linkColor.forEach(l => l.classList.remove('active'));
+            this.classList.add('active'); // Assuming `this` refers to the clicked link
+        }
+    }
+    linkColor.forEach(l => l.addEventListener('click', colorLink));
+
+    // POP-UP
+    // Initialize the modal to be draggable & resizable
+    $("#sastModal").draggable().resizable();
+    $("#checklistModal").draggable().resizable();
+
+    // Show the modal when "Stats" link is clicked
+    $(".nav_link").eq(1).on("click", function(e) {
+        e.preventDefault(); // Prevent the default link behavior
+        $("#sastModal").fadeIn();
+    });
+
+    // Close the modal when "X" button is clicked
+    $("#closeModal").on("click", function() {
+        $("#sastModal").fadeOut();
+    });
+
+    // Loop through each checkbox and set it to unchecked
+    var checkboxes = document.querySelectorAll('#checklist input[type="checkbox"]');
+        checkboxes.forEach(function(checkbox) {
+            checkbox.checked = false;
+        });
+    
+    document.getElementById('checklist').addEventListener('change', function(e) {
+        const item = e.target.closest('li');
+        if (e.target.checked) {
+            item.classList.add('checked');
+            this.appendChild(item);
+        } else {
+            item.classList.remove('checked');
+            this.insertBefore(item, this.children[0]);
+        }
+    });    
+    // Show the modal when "Stats" link is clicked
+    $(".nav_link").eq(2).on("click", function(e) {
+        e.preventDefault(); // Prevent the default link behavior
+        $("#checklistModal").fadeIn();
+    });
+
+    // Close the modal when "X" button is clicked
+    $("#closeChecklist").on("click", function() {
+        $("#checklistModal").fadeOut();
+    });
+});
+    function invertImage() {
+    var img = document.getElementById('submitDuck');
+    img.style.filter = 'invert(100%)';
+  }
+
+  function revertImage() {
+    var img = document.getElementById('submitDuck');
+    img.style.filter = 'none';
+  }
+    </script>
+</body>
+</html>

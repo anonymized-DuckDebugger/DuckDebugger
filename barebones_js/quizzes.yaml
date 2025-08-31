@@ -1,0 +1,944 @@
+uuid_quiz_1:
+    disabled: True
+    name: "The test of your life."
+    language: generic
+    flag: AMAZING_FLAG
+    store_answers: True
+    questions:
+        - id: "uuid1"
+          text: "Why did the chicken cross the road?"
+          any_answer: True
+          single_answer: True
+          answers:
+              a:
+                  text: "It was running away from aliens"
+                  correct: False
+                  info: "Everyone knows aliens are tasty and should be run TOWARDS and with grand apetite for an otherworldy snack"
+              b:
+                  text: "To get to the other side."
+                  correct: True
+                  info: "Truth is most of the time boring."
+        - id: "uuid2"
+          text: "Why did the chicken NOT cross the road?"
+          answers:
+              a:
+                  text: "Screw this."
+                  correct: False
+                  info: "Frustration is the path towards despair."
+              b:
+                  text: "Is this even a real test?"
+                  correct: True
+                  info: "Question everything."
+              c:
+                  text: "This is correct as well"
+                  correct: True
+                  info: "Honest quiz-making"
+6d57d7573caa:
+    name: "CSharp Owasp Top10"
+    language: CSharp
+    flag: YOUDNEVERGUESSTHIS
+    questions:
+        - id: 740e5aebfe1d
+          text: "What is Broken Access Control?"
+          NO_image_path: "quiz_images/hamsti.jpg"
+          answers:
+              a:
+                  text: "A vulnerability that allows an attacker to access restricted information."
+                  correct: False
+                  info: "Correct but not entirely."
+              b:
+                  text: "A vulnerability that allows an attacker to modify or delete restricted information."
+                  correct: False
+                  info: "Correct but not entirely."
+              c:
+                  text: "A vulnerability that allows an attacker to bypass access controls."
+                  correct: False
+                  info: "Correct but not entirely."
+              d:
+                  text: "All of the above."
+                  correct: True
+                  info: "Correct. Broken Access Control is a vulnerability that allows an attacker to access restricted information, modify or delete restricted information, and bypass access controls."
+        - id: 68fe45e5ee1a
+          text: "The goal of Open Web Application Security Project (OWASP) Top 10 report put together by security experts is to ..."
+          answers:
+              a:
+                  text: "Create a standard for security benchmark of web applications."
+                  correct: False
+                  info: "Incorrect. OWASP Top 10 is often effort to as 'awareness document' for educational purposes."
+              b:
+                  text: "Improve awareness and promote recommended mitigation techniques to most critical security concerns for web app security."
+                  correct: True
+                  info: "Correct"
+              c:
+                  text: "Be the only go-to report your organization would need to stay secured."
+                  correct: False
+                  info: "Incorrect. There are many security reports beyond OWASP, with SANS CWE Top 25 being one of them."
+        - id: 0a3261608465
+          text: "Is it considered to be good practice to come up with your own, home-grown encryption algorithm?"
+          answers:
+              a:
+                  text: "Yes, how else will people know I'm smart?"
+                  correct: False
+                  info: "Incorrect. Rely on industry standard encryption and hashing implementations. Review the documentation to ensure you're using strong algorithms."
+              b:
+                  text: "No."
+                  correct: True
+                  info: "Correct. Rely on industry standard encryption and hashing implementations. Review the documentation to ensure you're using strong algorithms."
+        - id: 878fbca179c2
+          text: "The process of converting data to a different format to protect the integrity of data for storage, transmission, compression or decompression best describes..."
+          answers:
+              a:
+                  text: "Encryption"
+                  correct: False
+                  info: "Incorrect. Encryption deals with maintaining confidentiality and integrity of the data by converting the data into an unreadable format to protect it from unauthorized access."
+              b:
+                  text: "Hashing"
+                  correct: False
+                  info: "Incorrect. Hashing is a one-way cryptographic function while encryption and encoding is designed to work both ways."
+              c:
+                  text: "Encoding"
+                  correct: True
+                  info: "Correct."
+        - id: 135f71a13a89
+          text: |
+            In modern day .NET, how can the code fragment string sql='SELECT * FROM users WHERE name = '" + username + "' be written more securely?
+          answers:
+              a:
+                  text: "Using an object relational mapper (ORM)."
+                  correct: False
+                  info: "Entity Framework with LINQ is a powerful way of querying many relational database engines."
+              b:
+                  text: "Using stored procedures."
+                  correct: False
+                  info: "Stored procedures are the most effective way of countering the SQL Injection vulnerability."
+              c:
+                  text: "Using parameterized queries."
+                  correct: False
+                  info: "Use parameterized queries where a direct SQL query must be used."
+              d:
+                  text: "At least one or combinations of few techniques should be used, including Entity Framework and input validation"
+                  correct: True
+                  info: With username validation as a minimum, any of the methods can be used.
+        - id: 8110f7d199dd
+          text: "What are the objectives of threat modeling exercise?"
+          answers:
+              a:
+                  text: "It's a guided process to help with manual security testing."
+                  correct: False
+                  info: "Threat modeling indicates areas of the system that need verification after mitigation is applied but isn't limited to manual testing."
+              b:
+                  text: "Helps to identify an accountable person who is to blame when a security incident happens."
+                  correct: False
+                  info: "Avoid blame culture in your organizations. Learn from mistakes to prevent them from occurring in the future."
+              c:
+                  text: "Improves understand of security threats to a system, determine risks from those threats, and establish appropriate mitigations."
+                  correct: True
+                  info: "Threat modeling can be considered part of risk management, it covers the initial phases of the process."
+        - id: 8110f7d198dc
+          text: "In context of Secure DevOps, what does SDL stand for?"
+          answers:
+              a:
+                  text: "Schema Definition Language."
+                  correct: False
+                  info: "Not quite"
+              b:
+                  text: "Security Development Lifecycle."
+                  correct: True
+                  info: "Correct! You may come across similar acronym SDLC, which means the same."
+              c:
+                  text: "Supplier Document List"
+                  correct: False
+                  info: "Almost there!"
+        - id: ff1ac01e98c2
+          text: "Should the DevOps team maintain and review list of third party components used in the system for security vulnerabilities? "
+          answers:
+              a:
+                  text: "An Excel spreadsheet with Software Bill of Materials should be part of the design phase and any new green field project."
+                  correct: False
+                  info: "SBOM is recommended, however can be applied at any stage of the project in more automated fashion."
+              b:
+                  text: "Favor automated tools at any stage of product lifecycle to track and monitor your dependencies."
+                  correct: True
+                  info: "Correct. Maintenance effort required to keep a list of dependencies up-to-date combined with their vulnerability check can quickly become unmanageable."
+              c:
+                  text: "There's no risk associated with third party purchased and OSS components."
+                  correct: False
+                  info: "Even if your software makes the best effort in staying secure, an insecure or flowed dependency may introduce security vulnerability in your system."
+        - id: e1a12286be7b
+          text: "You support a legacy web app hosted in Azure. When browsing the codebase, you stumbled upon a hardcoded database connection string with username and password to a production environment database. What would be the correct course of action?"
+          answers:
+              a:
+                  text: "Find the authors of the change with git blame and ask them to fix it when they have some spare time"
+                  correct: False
+                  info: "Changes are, whoever checked in the commit, might no longer be part of your team or even the same company."
+              b:
+                  text: "Change password for username referenced in connection string. Open a pull request with hardcoded connection string now being obtained from Azure KeyVault."
+                  correct: True
+                  info: "Secret rotation is a good practice. Azure KeyVault is the go-to service for storing secrets, certificates and keys and in most secure fashion. Avoid blame games."
+              c:
+                  text: "The connection string is only referenced in Git and code, no one can access it since only the web app is available to the public so nothing needs to be done."
+                  correct: False
+                  info: "Secret scanning can ensure no secrets make their way into the repository. Access to the codebase and the CI/CD system can be compromised leading to exposure of connection string."
+        - id: 43e42947cf89
+          text: "You plan to analyze deployed and running system. You want to focus finding security vulnerabilities in infrastructure and configuration. Which form of security testing would you benefit the most?"
+          answers:
+              a:
+                  text: "Static Application Security Testing (SAST)."
+                  correct: False
+                  info: "Static analysis focuses on code prior to its deployment."
+              b:
+                  text: "Software Composition Analysis (SCA)."
+                  correct: False
+                  info: "Composition analysis focuses on code prior to its deployment."
+              c:
+                  text: "Dynamic Application Security Testing (DAST)."
+                  correct: True
+                  info: "Correct. Dynamic analysis can inspect and report on infrastructure configuration and expose its weak points."
+              d:
+                  text: "Chaos testing"
+                  correct: False
+                  info: "Helpful technique in reliability and disaster recovery testing but not quite"                                    
+        - id: 73801f78a47e
+          text: "Which of the statements would you consider secure logging best practices? "
+          answers:
+              a:
+                  text: "Log all events occurring in the system and store the logs in an easily accessible public location."
+                  correct: False
+                  info: "Overlogging may add noise when diagnosing issues. Logs should be protected and not exposed to public."
+              b:
+                  text: "Log user and password of all failed authentication attempts."
+                  correct: False
+                  info: "Not quite. Failed authentication attempts should be logged and audited. Logging passwords is a security risk"
+              c:
+                  text: "Sanitize logs from sensitive information and guard access to logged information."
+                  correct: True
+                  info: "Correct."
+        - id: a36bf64a2aec
+          text: "Performing input validation on client side only is considered to be best practice?"
+          answers:
+              a:
+                  text: "Yes"
+                  correct: False
+                  info: "Client side validation should never be the only line of defense when dealing with user input. Always validate on both client and server side."
+              b:
+                  text: "No."
+                  correct: True
+                  info: "Always validate on both client and server side."
+
+201b6db91b07:
+  name: Best Practices for Code Review Comments - Part 1
+  language: English
+  flag: 74ded432888d
+  questions:
+  - id: 4866cbe029f7
+    text: What should you avoid when giving code review comments?
+    answers:
+      a:
+        text: Offering direct solutions to the author.
+        correct: true
+        info: Correct. Providing direct solutions can hinder the author's learning
+          process.
+      b:
+        text: Asking questions to encourage the author to think.
+        correct: false
+        info: Incorrect. Asking questions promotes critical thinking.
+      c:
+        text: Mentioning potential optimizations.
+        correct: false
+        info: Incorrect. Discussing optimizations can improve code efficiency.
+      d:
+        text: Providing constructive feedback.
+        correct: false
+        info: Incorrect. Constructive feedback is essential in code reviews.
+  - id: 835156d3e277
+    text: Which is an example of an appropriate code review comment?
+    answers:
+      a:
+        text: '"Better take my solution: int getRand(void) { ... }"'
+        correct: false
+        info: Incorrect. Offering your solution directly is not recommended.
+      b:
+        text: '"Every time you need a random number, you call an expensive function.
+          I think the code can be optimized by other means."'
+        correct: true
+        info: Correct. This comment provides constructive feedback and suggests optimization.
+      c:
+        text: '"Why did you do it this way? It''s not efficient."'
+        correct: false
+        info: Incorrect. This comment is vague and doesn't offer helpful guidance.
+      d:
+        text: '"Just do it like this."'
+        correct: false
+        info: Incorrect. This directive doesn't encourage the author to think critically.
+  - id: 2cc769b274a7
+    text: Why is it important to provide background information in your code review
+      comments?
+    answers:
+      a:
+        text: So the author knows that you have expertise.
+        correct: false
+        info: Incorrect. The focus should be on the code, not on displaying expertise.
+      b:
+        text: To ensure the author understands the reason for your comment.
+        correct: true
+        info: Correct. Background information helps the author grasp the rationale
+          behind suggestions.
+      c:
+        text: To demonstrate your knowledge of the codebase.
+        correct: false
+        info: Incorrect. The goal is to improve the code, not to showcase your knowledge.
+      d:
+        text: To discourage the author from asking further questions.
+        correct: false
+        info: Incorrect. Open communication should be encouraged.
+  - id: e4ec49d009ab
+    text: Which of these is an example of a comment with useful background information?
+    answers:
+      a:
+        text: '"Remove the dependency to the XXX component."'
+        correct: false
+        info: Incorrect. This lacks background information.
+      b:
+        text: '"Please remove the dependency to the XXX component. Both components
+          are in different microservices, and there should be no static dependency
+          between them."'
+        correct: true
+        info: Correct. This comment provides context and explains why the change is
+          needed.
+      c:
+        text: '"I don''t like the dependency here."'
+        correct: false
+        info: Incorrect. This is subjective and doesn't provide useful information.
+      d:
+        text: '"The dependency looks unnecessary."'
+        correct: false
+        info: Incorrect. This lacks detailed background information.
+  - id: d5dcd5ea6e84
+    text: What kind of language should you avoid using in code review comments?
+    answers:
+      a:
+        text: Neutral language
+        correct: false
+        info: Incorrect. Neutral language is appropriate.
+      b:
+        text: Positive and encouraging language
+        correct: false
+        info: Incorrect. Positive language is beneficial.
+      c:
+        text: Harsh language
+        correct: true
+        info: Correct. Harsh language can be discouraging and unprofessional.
+      d:
+        text: Suggestive language
+        correct: false
+        info: Incorrect. Suggestive language can be helpful.
+d969d9581eee:
+  name: Best Practices for Code Review Comments - Part 2
+  language: English
+  flag: b725fd2c276a
+  questions:
+  - id: c446d088c865
+    text: Which of the following is an example of an appropriate tone in a code review
+      comment?
+    answers:
+      a:
+        text: '"The way you name your variables is stupid. Go and read our coding
+          guidelines!"'
+        correct: false
+        info: Incorrect. This is harsh and unprofessional.
+      b:
+        text: '"The variables should be named according to our coding guidelines."'
+        correct: true
+        info: Correct. This is a constructive and professional comment.
+      c:
+        text: '"I hate how you''ve named these variables."'
+        correct: false
+        info: Incorrect. This expresses personal frustration and is unhelpful.
+      d:
+        text: '"This is wrong; change it."'
+        correct: false
+        info: Incorrect. This is vague and doesn't guide the author.
+  - id: 742c515a6947
+    text: Why should you avoid jokes or cynicism in code review comments?
+    answers:
+      a:
+        text: It can make you appear more friendly.
+        correct: false
+        info: Incorrect. Jokes may not be perceived as friendly by everyone.
+      b:
+        text: It ensures that your comment is understood by everyone, not just close
+          colleagues. Text-based communication lacks nuances and is easy to mis-interpre,
+          especially by people who are not familiar with you.
+        correct: true
+        info: Correct. Avoiding jokes ensures clarity and professionalism.
+      c:
+        text: It makes the comment easier to understand.
+        correct: false
+        info: Incorrect. Jokes can sometimes obscure the message.
+      d:
+        text: Jokes make the code review process longer.
+        correct: false
+        info: Incorrect. While possible, the main concern is clarity and professionalism.
+  - id: 2ad04a1bde99
+    text: Which of these is an example of a constructive and professional comment?
+    answers:
+      a:
+        text: '"Our boss likes comments and you do not?"'
+        correct: false
+        info: Incorrect. This is sarcastic and unhelpful.
+      b:
+        text: '"I think that a comment here would improve readability and align with
+          our style guide recommendations."'
+        correct: true
+        info: Correct. This is a helpful and professional suggestion.
+      c:
+        text: '"Why do you hate comments?"'
+        correct: false
+        info: Incorrect. This is accusatory and unprofessional.
+      d:
+        text: '"Comments are for beginners."'
+        correct: false
+        info: Incorrect. This is dismissive and unhelpful.
+  - id: 8f9476075ac9
+    text: What is the purpose of marking comments as important, unimportant, or optional
+      in a code review?
+    answers:
+      a:
+        text: To make the review process more complicated.
+        correct: false
+        info: Incorrect. The goal is to prioritize feedback.
+      b:
+        text: To help the author understand the priority and focus on key areas.
+        correct: true
+        info: Correct. It helps the author address the most critical issues first.
+      c:
+        text: To criticize the author indirectly.
+        correct: false
+        info: Incorrect. The intention is to improve clarity, not to criticize.
+      d:
+        text: To show that some comments don't matter.
+        correct: false
+        info: Incorrect. All comments aim to improve the code, but priorities vary.
+  - id: 19b1bbdb41d8
+    text: Which is an example of a helpful, optional comment?
+    answers:
+      a:
+        text: '"Optional: maybe we could consider moving this method to the utility
+          library."'
+        correct: true
+        info: Correct. This suggests an idea without imposing it.
+      b:
+        text: '"I think you should move this to the utility library."'
+        correct: false
+        info: Incorrect. This is more of a directive than an optional suggestion.
+      c:
+        text: '"You must move this to the utility library."'
+        correct: false
+        info: Incorrect. This is a command, not an optional comment.
+      d:
+        text: '"Why didn''t you put this in the utility library?"'
+        correct: false
+        info: Incorrect. This could be perceived as accusatory.
+f95b59eafd49:
+  name: Best Practices for Code Review Comments - Part 3
+  language: English
+  flag: 5f0f66a34a71
+  questions:
+  - id: 8a92c752734f
+    text: What should you focus on critiquing in a code review?
+    answers:
+      a:
+        text: The author's approach to coding in general.
+        correct: false
+        info: Incorrect. Focus should be on the specific code changes.
+      b:
+        text: The specific code and its functionality.
+        correct: true
+        info: Correct. Critique should be about the code, not the person.
+      c:
+        text: The author's personality.
+        correct: false
+        info: Incorrect. Personal comments are inappropriate.
+      d:
+        text: The author's coding style preferences.
+        correct: false
+        info: Incorrect. Unless it violates guidelines, personal style is acceptable.
+  - id: b9514aaf2ce2
+    text: Which comment appropriately focuses on the code rather than the person?
+    answers:
+      a:
+        text: '"Why did you implement it like this? It''s overly complex."'
+        correct: false
+        info: Incorrect. This can be perceived as personal criticism.
+      b:
+        text: '"This method starts several threads to complete its computations. I
+          think it adds complexity without performance gains."'
+        correct: true
+        info: Correct. This comment is objective and focuses on the code.
+      c:
+        text: '"Your changes are unnecessarily complex."'
+        correct: false
+        info: Incorrect. This targets the person rather than the code.
+      d:
+        text: '"You don''t know how to handle complexity well."'
+        correct: false
+        info: Incorrect. This is a personal critique.
+  - id: 23324f370dd1
+    text: What is an appropriate way to ask for clarification in a code review?
+    answers:
+      a:
+        text: '"I don''t understand this! Rework it."'
+        correct: false
+        info: Incorrect. This is demanding and unhelpful.
+      b:
+        text: '"What was the reason to implement the algorithm like this? Is this
+          an improvement in runtime?"'
+        correct: true
+        info: Correct. This question is polite and seeks clarification.
+      c:
+        text: '"This doesn''t make sense."'
+        correct: false
+        info: Incorrect. This provides no constructive feedback.
+      d:
+        text: '"Redo this in a simpler way."'
+        correct: false
+        info: Incorrect. This is a directive without explanation.
+  - id: e2318ed0f867
+    text: Which is an example of a constructive comment that encourages thought rather
+      than giving a direct solution?
+    answers:
+      a:
+        text: '"Just take my solution: return 42."'
+        correct: false
+        info: Incorrect. This provides a direct solution without explanation.
+      b:
+        text: '"I noticed this approach could be costly. Are there other methods that
+          could achieve the same goal more efficiently?"'
+        correct: true
+        info: Correct. This encourages the author to consider alternatives.
+      c:
+        text: '"Replace this with my solution."'
+        correct: false
+        info: Incorrect. This doesn't encourage independent thinking.
+      d:
+        text: '"Your solution doesn''t work."'
+        correct: false
+        info: Incorrect. This is unhelpful without further explanation.
+dc282aa1531b:
+  name: Code Optimization and Readability
+  language: English
+  flag: 6fb022fa98a3
+  questions:
+  - id: fce06bf88d47
+    text: What improvement does the second code block (in green) have over the first
+      code block (in red) in terms of branching logic?
+    image_path: quiz_images/c1.png
+    answers:
+      a:
+        text: It adds more nested if-else statements.
+        correct: false
+        info: Incorrect. The second code block simplifies branching logic.
+      b:
+        text: It removes the if-else logic completely.
+        correct: false
+        info: Incorrect. It still uses if-else logic but optimizes it.
+      c:
+        text: It replaces the else statement with an else-if and introduces error
+          handling.
+        correct: true
+        info: Correct. It optimizes branching and adds error handling.
+      d:
+        text: It uses a different syntax for defining variables.
+        correct: false
+        info: Incorrect. The variable syntax remains the same.
+  - id: 753f700d5307
+    text: What is the benefit of using else if in the second code block rather than
+      else alone as in the first?
+    image_path: quiz_images/c4.png
+    answers:
+      a:
+        text: It allows for more efficient compilation.
+        correct: false
+        info: Incorrect. Compilation efficiency is not the main benefit.
+      b:
+        text: It allows for specific handling of a blue condition and introduces error
+          handling for unexpected inputs.
+        correct: true
+        info: Correct. It handles specific conditions and adds error handling.
+      c:
+        text: It minimizes code size.
+        correct: false
+        info: Incorrect. Code size is not significantly affected.
+      d:
+        text: It allows both conditions to execute.
+        correct: false
+        info: Incorrect. It ensures only one condition is executed.
+  - id: 13f9ee617307
+    text: In the second code block, what does the isSameSize variable represent?
+    image_path: quiz_images/c4.png
+    answers:
+      a:
+        text: It checks if input.size() is equal to size.
+        correct: true
+        info: Correct. It compares the input size with a given size.
+      b:
+        text: It checks if left and right conditions are true.
+        correct: false
+        info: Incorrect. That's handled by other variables.
+      c:
+        text: It holds the final return value of the function.
+        correct: false
+        info: Incorrect. It represents a specific condition, not the final return
+          value.
+      d:
+        text: It is used to debug the code.
+        correct: false
+        info: Incorrect. It's used in logical conditions, not debugging.
+  - id: 3e4345783474
+    text: What is the purpose of creating a separate isSameSize variable in the second
+      code block?
+    image_path: quiz_images/c4.png
+    answers:
+      a:
+        text: It makes the code less readable.
+        correct: false
+        info: Incorrect. It actually improves readability.
+      b:
+        text: It allows for more readable and understandable conditional checks.
+        correct: true
+        info: Correct. It clarifies the purpose of the condition.
+      c:
+        text: It reduces the performance of the code.
+        correct: false
+        info: Incorrect. Performance is not negatively impacted.
+      d:
+        text: It doesn't affect the code in any way.
+        correct: false
+        info: Incorrect. It affects code readability.
+  - id: 7a05129a0f8a
+    text: Which return statement more clearly expresses the intended logic?
+    image_path: quiz_images/c4.png
+    answers:
+      a:
+        text: return (left && right) || (input.size() == size);
+        correct: false
+        info: Incorrect. This is less descriptive.
+      b:
+        text: return (isLeftEndCorrect && isRightEndCorrect) || isSameSize;
+        correct: true
+        info: Correct. It uses meaningful variable names for clarity.
+      c:
+        text: return (isSameSize && input.size() == size);
+        correct: false
+        info: Incorrect. This is redundant.
+      d:
+        text: Both are equally clear.
+        correct: false
+        info: Incorrect. The second statement is clearer.
+  - id: 9a7b13fc5f0b
+    text: What is a potential benefit of the second code block's structure over the
+      first?
+    image_path: quiz_images/c4.png
+    answers:
+      a:
+        text: It allows the code to run faster.
+        correct: false
+        info: Incorrect. Performance may not be significantly affected.
+      b:
+        text: It clarifies the conditions and adds error handling, making the code
+          easier to maintain and debug.
+        correct: true
+        info: Correct. Improved structure aids maintenance and debugging.
+      c:
+        text: It reduces the number of conditions checked.
+        correct: false
+        info: Incorrect. The number of conditions remains similar.
+      d:
+        text: It decreases the function's overall complexity.
+        correct: false
+        info: Incorrect. Complexity is managed but not necessarily decreased.
+4599d1820b30:
+  name: Refactoring for Readability and Maintainability - Part 1
+  language: English
+  flag: 00dc119db111
+  questions:
+  - id: 5f7e6fe2169e
+    text: What is the purpose of using guard clauses as shown in the green code example?
+    image_path: quiz_images/c3.png
+    answers:
+      a:
+        text: To increase the nesting level of the code.
+        correct: false
+        info: Incorrect. Guard clauses reduce nesting.
+      b:
+        text: To handle special conditions early and exit if necessary, reducing nesting.
+        correct: true
+        info: Correct. They handle exceptions early and simplify the main flow.
+      c:
+        text: To make the code more complicated for the author.
+        correct: false
+        info: Incorrect. The aim is to simplify code.
+      d:
+        text: To perform multiple actions for unusual cases.
+        correct: false
+        info: Incorrect. Guard clauses handle specific cases and exit.
+  - id: a46d4db28f14
+    image_path: quiz_images/c3.png
+    text: In the green code example, what happens when isUnusualCase is true?
+    answers:
+      a:
+        text: The main processing (start, process, etc.) runs as normal.
+        correct: false
+        info: Incorrect. The function exits after handling the unusual case.
+      b:
+        text: handleUnusualCase() is called, and the function exits immediately.
+        correct: true
+        info: Correct. It handles the case and exits early.
+      c:
+        text: Both handleUnusualCase() and handleError() are called.
+        correct: false
+        info: Incorrect. Only handleUnusualCase() is called.
+      d:
+        text: The main processing and error handling run in sequence.
+        correct: false
+        info: Incorrect. The main processing is skipped.
+  - id: b92f6900de7a
+    text: How does using guard clauses improve code readability?
+    image_path: quiz_images/c3.png
+    answers:
+      a:
+        text: By removing the need for return statements.
+        correct: false
+        info: Incorrect. Return statements are still used.
+      b:
+        text: By reducing indentation and handling exceptions early, making the main
+          path of the code clearer.
+        correct: true
+        info: Correct. It keeps the main logic less nested and more readable.
+      c:
+        text: By increasing the number of conditional checks.
+        correct: false
+        info: Incorrect. The number of checks remains the same.
+      d:
+        text: By adding extra logic to each condition.
+        correct: false
+        info: Incorrect. It simplifies logic rather than adding to it.
+  - id: d89d3d9f6140
+    text: What is an advantage of the green code example for calculateSubsidy() over
+      the red example?
+    image_path: quiz_images/c1.png
+    answers:
+      a:
+        text: It removes unnecessary nested conditions, making the logic easier to
+          understand.
+        correct: true
+        info: Correct. Simplifying conditions improves readability.
+      b:
+        text: It uses fewer variables, reducing memory usage.
+        correct: false
+        info: Incorrect. Variable usage is not significantly different.
+      c:
+        text: It replaces if-else statements with switch-case logic.
+        correct: false
+        info: Incorrect. It still uses if-else statements.
+      d:
+        text: It eliminates the need for a return statement.
+        correct: false
+        info: Incorrect. Return statements are still present.
+  - id: 1f39b77a2e67
+    text: In the green calculateSubsidy() example, what is FULLTIME_SUBSIDY * RATIO
+      used for?
+    image_path: quiz_images/c1.png
+    answers:
+      a:
+        text: It calculates a specific subsidy amount for part-time status.
+        correct: true
+        info: Correct. It adjusts the subsidy based on a ratio.
+      b:
+        text: It checks if the applicant is full-time.
+        correct: false
+        info: Incorrect. It's used for part-time applicants.
+      c:
+        text: It represents the default subsidy for all applicants.
+        correct: false
+        info: Incorrect. It's a calculated value for a specific case.
+      d:
+        text: It is the only subsidy value returned by the function.
+        correct: false
+        info: Incorrect. There are other possible return values.
+  - id: 0b6a7cfd913e
+    text: How do constants improve security in code?
+    image_path: quiz_images/c1.png
+    answers:
+      a:
+        text: They make it easier to update sensitive values without needing to find
+          and replace everywhere.
+        correct: true
+        info: Correct. Constants allow for centralized control, reducing the risk
+          of hard-coded vulnerabilities.
+      b:
+        text: They prevent anyone from understanding the code.
+        correct: false
+        info: Incorrect. Using constants makes code clearer and does not obscure it
+          for malicious users.
+      c:
+        text: To reduce performance by adding unnecessary variables.
+        correct: false
+        info: Incorrect. Using constants does not reduce performance and actually
+          improves maintainability.
+      d:
+        text: To make the code look more mysterious and complex.
+        correct: false
+        info: Falce. Using magic numbers instead may make the code confusing rather
+          than secure or maintainable.
+eb8a344ffed9:
+  name: Refactoring for Readability and Maintainability - Part 2
+  language: English
+  flag: 7dfedb4d009f
+  questions:
+  - id: 6153a9025a6d
+    text: What is the purpose of refactoring the return statement in the green code
+      example with multiple boolean variables?
+    image_path: quiz_images/c2.png
+    answers:
+      a:
+        text: To make each condition more understandable by separating it into distinct
+          variables.
+        correct: true
+        info: Correct. It enhances readability by naming conditions.
+      b:
+        text: To reduce the number of return statements.
+        correct: false
+        info: Incorrect. The number of return statements is unchanged.
+      c:
+        text: To simplify the condition by removing boolean operators.
+        correct: false
+        info: Incorrect. Boolean operators are still used.
+      d:
+        text: To create a more complex condition for error handling.
+        correct: false
+        info: Incorrect. The aim is to simplify, not complicate.
+  - id: 70c3d09ccba5
+    text: In the green code example, what does isValidCode represent?
+    image_path: quiz_images/c2.png
+    answers:
+      a:
+        text: It checks if the typeCode is valid on its own.
+        correct: false
+        info: Incorrect. It combines multiple conditions.
+      b:
+        text: It combines the conditions isWithinSizeLimit and isSameSize to determine
+          code validity.
+        correct: true
+        info: Correct. It represents overall code validity.
+      c:
+        text: It determines if the code should run only for urgent cases.
+        correct: false
+        info: Incorrect. Urgency is a separate condition.
+      d:
+        text: It represents the maximum size limit for the code.
+        correct: false
+        info: Incorrect. It reflects code validity, not size limits.
+  - id: aae18f4fdbe3
+    text: What does the final return statement in the green code example check for?
+    image_path: quiz_images/c2.png
+    answers:
+      a:
+        text: That the code is urgent and valid.
+        correct: true
+        info: Correct. Both conditions must be true.
+      b:
+        text: That the code has exceeded the maximum length.
+        correct: false
+        info: Incorrect. It checks for validity and urgency.
+      c:
+        text: That the code type is urgent only.
+        correct: false
+        info: Incorrect. It also checks code validity.
+      d:
+        text: That the code length is within limits only.
+        correct: false
+        info: Incorrect. Both validity and urgency are checked.
+c9293c1180d9:
+  disabled: false
+  name: Guard Clauses vs. Nested Conditionals for Security and Maintainability
+  language: generic
+  flag: GUARDY0URCLAU5E5
+  questions:
+  - id: ecb8dd0c2d01
+    text: Why are guard clauses preferred over deeply nested conditionals in security-sensitive
+      code?
+    image_path: quiz_images/c3.png
+    single_answer: true
+    answers:
+      a:
+        text: They make it easier to spot and handle error conditions early, reducing
+          risk.
+        correct: true
+        info: Guard clauses handle errors immediately, reducing complexity and improving
+          readability, which helps prevent mistakes.
+      b:
+        text: They allow the code to skip security checks.
+        correct: false
+        info: Guard clauses help organize code but don't bypass necessary security
+          checks.
+      c:
+        text: They enhance performance by removing all conditionals.
+        correct: false
+        info: Guard clauses don't remove conditionals; they just simplify flow by
+          handling exceptional cases up front.
+      d:
+        text: They make it harder for developers to understand the code.
+        correct: false
+        info: In fact, guard clauses make code simpler and more readable.
+  - id: 36d9a6af0e31
+    text: What security advantage does using a guard clause provide when handling
+      error cases?
+    image_path: quiz_images/c3.png
+    answers:
+      a:
+        text: It allows for the immediate handling and termination of unusual cases.
+        correct: true
+        info: Guard clauses allow for early exits in unusual cases, minimizing the
+          impact and complexity of error handling.
+      b:
+        text: It allows the code to bypass unexpected input validation.
+        correct: false
+        info: Guard clauses don't skip validation; they handle errors in a controlled
+          way.
+      c:
+        text: It prevents all security issues by removing nested code.
+        correct: false
+        info: Guard clauses help organize and secure code but aren't a comprehensive
+          security solution.
+      d:
+        text: It prevents any errors from occurring.
+        correct: false
+        info: Guard clauses handle errors gracefully, but they don't prevent all possible
+          errors.
+  - id: 6189c288e1e0
+    text: How do guard clauses contribute to code maintainability and readability
+      in security-critical code?
+    image_path: quiz_images/c3.png
+    single_answer: true
+    answers:
+      a:
+        text: By reducing the depth of nested code and handling unusual cases immediately.
+        correct: true
+        info: Guard clauses reduce code nesting, making it easier to understand and
+          reducing the risk of overlooking security issues.
+      b:
+        text: By making the code less readable and more difficult to modify.
+        correct: false
+        info: Guard clauses actually make code easier to read and modify by isolating
+          edge cases.
+      c:
+        text: By making every line of code run faster.
+        correct: false
+        info: Guard clauses improve readability and structure but don't inherently
+          optimize performance.
+      d:
+        text: By allowing developers to ignore edge cases.
+        correct: false
+        info: Guard clauses highlight edge cases, making the code more secure and
+          maintainable.

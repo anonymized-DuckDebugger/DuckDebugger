@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Code Snippet Viewer</title>
+    <script src="https://cdn.jsdelivr.net/npm/js-cookie@3.0.1/dist/js.cookie.min.js"></script>
+
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.py.css') }}"> 
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        .modal-overlay {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            z-index: 999;
+        }
+        .modal-content {
+            background-color: white;
+            padding: 20px;
+            border-radius: 5px;
+            text-align: center;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+        th, td {
+            border: 0px solid #ddd;
+            padding: 0px;
+            margin: 0em;
+            text-align: left;
+        }
+        .nopad {
+            padding: 0em;
+            margin: 0em;
+	    }
+        pre.nopad {
+            padding: 0em;
+            margin: 0em;
+	    }
+        th {
+            background-color: #f2f2f2;
+        }
+        .comment-input {
+            width: 100%;
+            color: red;
+        }
+        #submitButton {
+            display: block;
+            margin: 20px auto;
+        }
+
+pre { line-height: 125%; }
+td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+.hll { background-color: #ffffcc }
+.c { color: #3D7B7B; font-style: italic } /* Comment */
+.err { border: 1px solid #FF0000 } /* Error */
+.k { color: #008000; font-weight: bold } /* Keyword */
+.o { color: #666666 } /* Operator */
+.ch { color: #3D7B7B; font-style: italic } /* Comment.Hashbang */
+.cm { color: #3D7B7B; font-style: italic } /* Comment.Multiline */
+.cp { color: #9C6500 } /* Comment.Preproc */
+.cpf { color: #3D7B7B; font-style: italic } /* Comment.PreprocFile */
+.c1 { color: #3D7B7B; font-style: italic } /* Comment.Single */
+.cs { color: #3D7B7B; font-style: italic } /* Comment.Special */
+.gd { color: #A00000 } /* Generic.Deleted */
+.ge { font-style: italic } /* Generic.Emph */
+.gr { color: #E40000 } /* Generic.Error */
+.gh { color: #000080; font-weight: bold } /* Generic.Heading */
+.gi { color: #008400 } /* Generic.Inserted */
+.go { color: #717171 } /* Generic.Output */
+.gp { color: #000080; font-weight: bold } /* Generic.Prompt */
+.gs { font-weight: bold } /* Generic.Strong */
+.gu { color: #800080; font-weight: bold } /* Generic.Subheading */
+.gt { color: #0044DD } /* Generic.Traceback */
+.kc { color: #008000; font-weight: bold } /* Keyword.Constant */
+.kd { color: #008000; font-weight: bold } /* Keyword.Declaration */
+.kn { color: #008000; font-weight: bold } /* Keyword.Namespace */
+.kp { color: #008000 } /* Keyword.Pseudo */
+.kr { color: #008000; font-weight: bold } /* Keyword.Reserved */
+.kt { color: #B00040 } /* Keyword.Type */
+.m { color: #666666 } /* Literal.Number */
+.s { color: #BA2121 } /* Literal.String */
+.na { color: #687822 } /* Name.Attribute */
+.nb { color: #008000 } /* Name.Builtin */
+.nc { color: #0000FF; font-weight: bold } /* Name.Class */
+.no { color: #880000 } /* Name.Constant */
+.nd { color: #AA22FF } /* Name.Decorator */
+.ni { color: #717171; font-weight: bold } /* Name.Entity */
+.ne { color: #CB3F38; font-weight: bold } /* Name.Exception */
+.nf { color: #0000FF } /* Name.Function */
+.nl { color: #767600 } /* Name.Label */
+.nn { color: #0000FF; font-weight: bold } /* Name.Namespace */
+.nt { color: #008000; font-weight: bold } /* Name.Tag */
+.nv { color: #19177C } /* Name.Variable */
+.ow { color: #AA22FF; font-weight: bold } /* Operator.Word */
+.w { color: #bbbbbb } /* Text.Whitespace */
+.mb { color: #666666 } /* Literal.Number.Bin */
+.mf { color: #666666 } /* Literal.Number.Float */
+.mh { color: #666666 } /* Literal.Number.Hex */
+.mi { color: #666666 } /* Literal.Number.Integer */
+.mo { color: #666666 } /* Literal.Number.Oct */
+.sa { color: #BA2121 } /* Literal.String.Affix */
+.sb { color: #BA2121 } /* Literal.String.Backtick */
+.sc { color: #BA2121 } /* Literal.String.Char */
+.dl { color: #BA2121 } /* Literal.String.Delimiter */
+.sd { color: #BA2121; font-style: italic } /* Literal.String.Doc */
+.s2 { color: #BA2121 } /* Literal.String.Double */
+.se { color: #AA5D1F; font-weight: bold } /* Literal.String.Escape */
+.sh { color: #BA2121 } /* Literal.String.Heredoc */
+.si { color: #A45A77; font-weight: bold } /* Literal.String.Interpol */
+.sx { color: #008000 } /* Literal.String.Other */
+.sr { color: #A45A77 } /* Literal.String.Regex */
+.s1 { color: #BA2121 } /* Literal.String.Single */
+.ss { color: #19177C } /* Literal.String.Symbol */
+.bp { color: #008000 } /* Name.Builtin.Pseudo */
+.fm { color: #0000FF } /* Name.Function.Magic */
+.vc { color: #19177C } /* Name.Variable.Class */
+.vg { color: #19177C } /* Name.Variable.Global */
+.vi { color: #19177C } /* Name.Variable.Instance */
+.vm { color: #19177C } /* Name.Variable.Magic */
+.il { color: #666666 } /* Literal.Number.Integer.Long */
+
+    </style>
+</head>
+<body>
+    <div class="modal-overlay" id="modal">
+        <div class="modal-content">
+            <p>Welcome! Please follow the instructions and press "Start" when ready.</p>
+            <button id="startButton">Start</button>
+        </div>
+    </div>
+
+    <table id="snippetTable">
+        <tbody>
+        </tbody>
+    </table>
+
+    <button id="submitButton" class="hidden">Submit</button>
+
+<!-- JS BONANZA STARTS HERE -->
+    <script>
+    var challenge = "python1";
+    // Cookie logic
+    function generateUUID() {
+        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+            var r = Math.random() * 16 | 0,
+                v = c === 'x' ? r : (r & 0x3 | 0x8);
+            return v.toString(16);
+        });
+    }
+    // Check if the UUID cookie exists
+    var uuidCookie = Cookies.get("uuid");
+    if (!uuidCookie) {
+        var newUUID = generateUUID();
+        Cookies.set("uuid", newUUID, { expires: Infinity }); // Set the cookie with no expiry
+        console.log("UUID cookie set:", newUUID);
+    } else {
+        console.log("UUID cookie already exists:", uuidCookie);
+    }
+
+//TABLE GENERATION
+        const table = document.getElementById('snippetTable');
+        const startButton = document.getElementById('startButton');
+        const modal = document.getElementById('modal');
+        const submitButton = document.getElementById('submitButton');
+        const comments = {};
+        let startTime;
+        let interactions = [];
+
+        startButton.addEventListener('click', () => {
+            modal.style.display = 'none';
+            startTime = new Date().getTime();
+        });
+
+        const codeSnippet = [
+            '#<span class="o">!/</span><span class="nv">usr</span><span class="o">/</span><span class="nv">bin</span><span class="o">/</span><span class="nv">env</span><span class="w"> </span><span class="nv">python</span>',
+            '<span class="k">if</span><span class="w"> </span><span class="nv">__name__</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s1">&#39;__main__&#39;</span>:',
+            '<span class="w">    </span><span class="nv">print</span><span class="ss">(</span><span class="s2">&quot;Hello World&quot;</span><span class="ss">)</span>'
+        ];
+
+        for (let i = 0; i < codeSnippet.length; i++) {
+            
+            const row = table.insertRow();
+            const lineNumberCell = row.insertCell(0);
+            const codeCell = row.insertCell(1);
+            const buttonCell = row.insertCell(2);
+
+            lineNumberCell.textContent = i + 1;
+            
+            const div_code = document.createElement('div');
+            div_code.className  = 'highlight';
+            const pre = document.createElement('pre');
+            pre.innerHTML = codeSnippet[i];
+            div_code.appendChild(pre);
+            codeCell.appendChild(div_code);
+
+// -- start of comment logic
+
+            const commentButton = document.createElement('button');
+            commentButton.textContent = 'Add Comment';
+            buttonCell.appendChild(commentButton);
+
+            const commentInput = document.createElement('textarea');
+            commentInput.className = 'comment-input';
+            buttonCell.appendChild(commentInput);
+            commentInput.style.display = 'none';
+
+            commentButton.addEventListener('click', () => {
+                commentButton.style.display = 'none';
+                commentInput.style.display = 'block';
+                commentInput.focus();
+
+                interactions.push({
+                    type: 'commentButtonClicked',
+                    lineNumber: i + 1,
+                    timestamp: new Date().getTime() - startTime,
+                });
+            });
+
+            commentInput.addEventListener('focus', () => {
+                interactions.push({
+                    type: 'commentInputFocusIn',
+                    lineNumber: i + 1,
+                    timestamp: new Date().getTime() - startTime,
+                });
+            });
+
+            commentInput.addEventListener('blur', () => {
+                const updatedCommentText = commentInput.value.trim(); // Get updated text
+                comments[i + 1] = {
+                    updated: updatedCommentText,
+                };
+                interactions.push({
+                    type: 'commentInputFocusOut',
+                    lineNumber: i + 1,
+                    timestamp: new Date().getTime() - startTime,
+                    updatedCommentText,
+                });
+            });
+        }
+
+        submitButton.addEventListener('click', () => {
+            interactions.push({
+                type: 'submitButtonClicked',
+                timestamp: new Date().getTime() - startTime
+            });
+
+            console.log(JSON.stringify(interactions, null, 2));
+            console.log(JSON.stringify(uuidCookie, null, 2));
+            console.log(JSON.stringify(challenge, null, 2));
+
+            fetch('/review', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Access-Control-Allow-Origin': '*'
+                },
+                body: JSON.stringify({
+                    uuidCookie,
+                    challenge,
+                    interactions,
+                }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Server response:', data);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        });
+// -- end of comment logic
+
+    </script>
+</body>
+</html>

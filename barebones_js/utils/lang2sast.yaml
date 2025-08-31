@@ -1,0 +1,17 @@
+csharp:
+  - semgrep
+  # - sonarqube # it's a pain to get running
+python:
+  - semgrep  
+  - bandit
+go:
+  - semgrep
+  - gosec
+java:
+  - semgrep
+javascript:
+  - semgrep
+c:
+  - semgrep
+cplusplus:
+  - semgrep

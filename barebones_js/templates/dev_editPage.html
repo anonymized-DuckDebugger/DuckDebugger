@@ -1,0 +1,106 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Crude Notepad</title>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+
+            const newModeRadio = document.getElementById('newMode');
+            const updateModeRadio = document.getElementById('updateMode');
+            const newFields = document.getElementById('newFields');
+            const updateFields = document.getElementById('updateFields');
+            const sourceCodeTextarea = document.getElementById('sourceCode');
+
+            newModeRadio.addEventListener('change', function() {
+                if (this.checked) {
+                    newFields.style.display = 'block';
+                    updateFields.style.display = 'none';
+                    sourceCodeTextarea.value = ''; // Clear the textarea
+                }
+            });
+
+            updateModeRadio.addEventListener('change', function() {
+                if (this.checked) {
+                    newFields.style.display = 'none';
+                    updateFields.style.display = 'block';
+                    loadSourceCode();
+                }
+            });
+
+            updateFields.addEventListener('change', loadSourceCode);
+
+            async function loadSourceCode() {
+                const selectedExercise = document.querySelector('[name="chosenExercise"]').value;
+                if (selectedExercise) {
+                    const response = await fetch(`/dev/get_source_code/${selectedExercise.split(' ')[0]}`);
+                    const data = await response.json();
+                    sourceCodeTextarea.value = data.source;
+                }
+            }
+        
+        });
+            async function submitForm() {
+                const form = document.getElementById('dev_editForm');
+                const formData = new FormData(form);
+                let jsonObject = {};
+
+                for (const [key, value] of formData.entries()) {
+                    jsonObject[key] = value;
+                }
+
+                // Add the mode to the JSON object
+                jsonObject['mode'] = document.getElementById('updateMode').checked ? 'update' : 'new';
+
+                const response = await fetch('/dev/submit', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(jsonObject)
+                });
+
+                const result = await response.json();
+                document.getElementById('output').textContent = result.message + '\n--stdout--\n' + result.stdout + '\n--stderr--\n' + result.stderr;
+            };
+        
+    </script>
+</head>
+<body>
+    <form id="dev_editForm" onsubmit="event.preventDefault(); submitForm();">
+        <div>
+            <input type="radio" id="newMode" name="mode" value="new" checked>
+            <label for="newMode">New</label>
+            <input type="radio" id="updateMode" name="mode" value="update">
+            <label for="updateMode">Update</label>
+        </div>
+    
+        <div id="newFields">
+            Filename: <input type="text" name="filename">
+            <select name="extension">
+                {% for ext in extensions %}
+                <option value="{{ ext }}">{{ ext }}</option>
+                {% endfor %}
+            </select>
+            DisplayName: <input type="text" name="displayName">
+        </div>
+    
+        <div id="updateFields" style="display: none;">
+            <select name="chosenExercise">
+                {% for ex in available_exercises %}
+                <option value="{{ ex }}">{{ ex }}</option>
+                {% endfor %}
+            </select>
+        </div>
+    
+        <br><br>
+        <p>Source:</p>
+        <br>
+        <textarea id="sourceCode" name="sourceCode" rows="20" cols="80"></textarea>
+        <br>
+        <button type="submit">Submit</button>
+    </form>
+    <pre id="output"></pre>
+</body>
+</html>
